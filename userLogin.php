@@ -4,11 +4,9 @@
 <?php
     $username = htmlspecialchars($_POST["username"]);
     $password = htmlspecialchars($_POST["password"]);
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    echo "Your given info: $username!<br>";
-    echo "                 $password<br>";
-
-    //$hashedPassword = password_hash($password, PASSWORD_DEFAULT); add later
+    echo "Your given info: <br>Username: $username<br>Password: $password <br>";//Hashed password: $hashedPassword<br>";
 
     //Server connection info
     $servername = "localhost";
@@ -28,12 +26,25 @@
         $statement->execute();
         $results = $statement->get_result();
 
+        if(mysqli_num_rows($results) > 0)
+        {
+            $data = $results->fetch_assoc();
 
-        echo "Database connection test:<br>";
-        while ($row = $results->fetch_assoc()) {
-            echo "Username: " . $row['username'] . " - Password: " . $row['password'] . "<br>";
+            if (password_verify($password, $data['password'])) {
+                echo "Login successful:<br>";
+                echo "Username: ". $data['username'] . ", Password: " . $password . "<br>";
+            }
+            else
+            {
+                echo "Login unsuccessful, please input correct credentials or create an account.<br>";
+            }
         }
-
+        else
+        {
+            echo "Login unsuccessful, please input correct credentials or create an account.<br>";
+        }
+        
+        
         $statement->close();
         $connection->close();
     }
