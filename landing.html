@@ -61,11 +61,20 @@
       background-color: #1f3d63;
     }
 
-    .note {
-      font-size: 12px;
-      color: #640;
+    .create-account-link {
+      display: block;
       margin-top: 15px;
       text-align: center;
+      font-size: 14px;
+    }
+
+    .create-account-link a {
+      color: #2b4f81;
+      text-decoration: none;
+    }
+
+    .create-account-link a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -74,12 +83,6 @@
   <div class="login-container">
     <h2>Mobile Banking Application</h2>
     <form action="/userLogin.php" method="POST">
-      <label for="role">Login As</label>
-      <select id="role" name="role" required>
-        <option value="user">User</option>
-        <option value="admin">Admin</option>
-      </select>
-
       <label for="username">Username</label>
       <input type="text" id="username" name="username" placeholder="Enter username" required>
 
@@ -89,8 +92,8 @@
       <button type="submit">Login</button>
     </form>
 
-    <div class="note">
-        Philip Anlauf, Carter Bosley, Noah McGowan
+    <div class="create-account-link">
+      <a href="/register">Create account</a>
     </div>
   </div>
 
