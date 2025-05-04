@@ -1,3 +1,16 @@
+<?php
+    session_start();
+
+    $firstName = $_SESSION["firstName"];
+    $lastName = $_SESSION["lastName"];
+    $password = $_SESSION["password"];
+    $isAdmin = $_SESSION["isAdmin"];
+    $ssn = $_SESSION["ssn"];
+    $balance = $_SESSION["balance"];
+    $id = $_SESSION["AccountID"];
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -99,21 +112,24 @@
 
   <!-- Display user info -->
   <div class="section">
-    <h3>Account Overview</h3>
-    <p><strong>Name:</strong> </p>
-    <p><strong>Account Balance:</strong> </p>
+      <h3>Account Overview</h3>
+      <p><strong>Name: <?php echo $firstName . " " . $lastName?></strong> </p>
+      <p><strong>Account Balance: <?php echo "$" . $balance?></strong> </p>
+      <p><strong>User ID: <?php echo $id?></strong> </p>
   </div>
 
   <!-- Self account deletion -->
   <div class="section">
     <h3>Delete Account</h3>
-    <label for="delete-id">Enter Your ID</label>
-    <input type="text" id="delete-id" placeholder="User ID" />
+      <form action="/userDeletion.php" method="POST">
+        <label for="delete-id">Enter Your ID</label>
+        <input type="text" id="delete-id" placeholder="User ID" name="delete-id" />
 
-    <label for="delete-password">Enter Your Password</label>
-    <input type="password" id="delete-password" placeholder="Password" />
+        <label for="delete-password">Enter Your Password</label>
+        <input type="password" id="delete-password" placeholder="Password" name="delete-password"/>
 
-    <button type="button">Confirm Account Deletion</button>
+        <button type="submit">Confirm Account Deletion</button>
+      </form>
   </div>
 
   <!-- Loan section -->
@@ -143,13 +159,15 @@
   <!-- Money Transfer Section -->
   <div class="section">
     <h3>Send Money</h3>
-    <label for="transfer-id">Recipient ID</label>
-    <input type="text" id="transfer-id" placeholder="Recipient ID" />
+        <form action="/transferFunds.php" method="POST">
+            <label for="transfer-id">Recipient ID</label>
+            <input type="text" id="transfer-id" placeholder="Recipient ID" name="transfer-id" />
 
-    <label for="transfer-amount">Amount</label>
-    <input type="number" id="transfer-amount" placeholder="Amount to send" />
+            <label for="transfer-amount">Amount</label>
+            <input type="number" id="transfer-amount" placeholder="Amount to send" name="transfer-amount" />
 
-    <button type="button">Send Money</button>
+            <button type="submit">Send Money</button>
+        </form>
   </div>
 
 </div>

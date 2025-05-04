@@ -68,7 +68,7 @@
   <div class="register-container">
     <h2>Register New Account</h2>
 
-    <form>
+    <form action="/accountCreation.php" method="POST">
       <label for="firstName">First Name</label>
       <input type="text" id="firstName" name="firstName" required>
 
@@ -79,7 +79,7 @@
       <input type="date" id="birthday" name="birthday" required>
 
       <label for="ssn">Social Security Number</label>
-      <input type="number" id="ssn" name="ssn" placeholder="123456789" required>
+      <input type="text" id="ssn" name="ssn" placeholder="123-45-6789" required>
 
       <label for="password">Password</label>
       <input type="password" id="password" name="password" required>
