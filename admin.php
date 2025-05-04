@@ -41,7 +41,8 @@
     input[type="text"],
     input[type="password"],
     input[type="number"],
-    input[type="email"] {
+    input[type="email"],
+    input[type="date"] {
       width: 100%;
       padding: 10px;
       margin-bottom: 12px;
@@ -64,40 +65,6 @@
       background-color: #1f3d63;
     }
 
-    .loan-item {
-      background: #f4f8fb;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 8px;
-      border: 1px solid #d9e5f1;
-    }
-
-    .sub-label {
-      color: #444;
-      margin: 3px 0;
-    }
-
-    .flex-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .user-list {
-      max-height: 200px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      padding: 10px;
-      background: #fafafa;
-      border-radius: 6px;
-      margin-bottom: 20px;
-    }
-
-    .user-list-item {
-      padding: 5px 0;
-      border-bottom: 1px solid #ddd;
-    }
-
     .sub-heading {
       margin-top: 25px;
       font-size: 16px;
@@ -114,27 +81,36 @@
   <!-- Account Info -->
   <div class="section">
     <h3>Admin Account Overview</h3>
-    <p><strong>Name:</strong></p>
-    <p><strong>Account Balance:</strong></p>
+    <p><strong>Name:</strong> Admin User</p>
+    <p><strong>Account Balance:</strong> $0.00</p>
   </div>
 
-  <!-- Loan Management (Same as User) -->
+  <!-- Loan Creation -->
   <div class="section">
-    <h3>Loan Management</h3>
-    <div class="loan-item">
-      <div class="sub-label"><strong>Loan Amount:</strong> </div>
-      <div class="sub-label"><strong>Minimum Due:</strong> </div>
-      <div class="sub-label"><strong>Auto Payment:</strong> </div>
-      <div class="sub-label"><strong>Auto Payment On:</strong> </div>
-      <div class="sub-label"><strong>MPU%:</strong> </div>
-      <div class="sub-label"><strong>NDD:</strong> 2025-07-01</div>
+    <h3>Create Loan for User</h3>
 
-      <label>Custom Payment</label>
-      <div class="flex-row">
-        <input type="number" placeholder="Enter amount" />
-        <button type="button">Submit Payment</button>
-      </div>
-    </div>
+    <label>User ID</label>
+    <input type="text" placeholder="User ID" />
+
+    <label>Loan Amount</label>
+    <input type="number" placeholder="Loan Amount" />
+
+    <label>Minimum Due</label>
+    <input type="number" placeholder="Minimum Amount Due" />
+
+    <label>Auto Payment Amount</label>
+    <input type="number" placeholder="Auto Payment Amount" />
+
+    <label>Auto Payment Status (on/off)</label>
+    <input type="text" placeholder="Auto Payment Status" />
+
+    <label>MPU%</label>
+    <input type="number" placeholder="MPU%" />
+
+    <label>NDD</label>
+    <input type="date" placeholder="NDD" />
+
+    <button type="button">Create Loan</button>
   </div>
 
   <!-- Money Transfer -->
@@ -153,17 +129,20 @@
   <div class="section">
     <h3>Admin User Management Panel</h3>
 
-    <!-- User List -->
-    <div class="sub-heading">All Users</div>
-    <div class="user-list">
-      <div class="user-list-item">User 001 – John </div>
-      <div class="user-list-item">User 002 – Sarah </div>
-      <div class="user-list-item">User 003 – Mike </div>
-      <!-- More users dynamically here -->
-    </div>
+    <!-- User Lookup -->
+    <div class="sub-heading">Find Specific User</div>
+
+    <label>User ID</label>
+    <input type="text" placeholder="Enter User ID" />
+
+    <label>User Name</label>
+    <input type="text" placeholder="Enter User Name" />
+
+    <button type="button">Lookup User</button>
 
     <!-- Deletion Form -->
     <div class="sub-heading">Delete a User Account</div>
+
     <label>User ID</label>
     <input type="text" placeholder="Enter user ID to delete" />
 
@@ -172,18 +151,28 @@
 
     <button type="button">Confirm Deletion</button>
 
-    <!-- Creation Form -->
-    <div class="sub-heading">Create New User Account</div>
-    <label>Full Name</label>
-    <input type="text" placeholder="Full Name" />
+    <!-- Modify User Form -->
+    <div class="sub-heading">Change User Details</div>
 
-    <label>Email</label>
-    <input type="email" placeholder="Email" />
+    <label>Account ID (Target User)</label>
+    <input type="text" placeholder="User Account ID to Modify" />
+
+    <label>First Name</label>
+    <input type="text" placeholder="First Name" />
+
+    <label>Last Name</label>
+    <input type="text" placeholder="Last Name" />
+
+    <label>Birthday</label>
+    <input type="date" placeholder="Birthday" />
+
+    <label>SSN</label>
+    <input type="text" placeholder="SSN" />
 
     <label>Password</label>
-    <input type="password" placeholder="Set a password" />
+    <input type="password" placeholder="Set/Update Password" />
 
-    <button type="button">Create Account</button>
+    <button type="button">Update User</button>
   </div>
 
 </div>
