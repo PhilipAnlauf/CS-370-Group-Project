@@ -8,6 +8,7 @@ session_start();
 $senderID = $_SESSION['AccountID'];
 $receiverID = $_POST["transfer-id"];
 $amount = $_POST["transfer-amount"];
+$id = $_SESSION['AccountID'];
 
 // Enable exception mode
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
@@ -26,6 +27,11 @@ try {
     $newBalanceQuery->execute();
     $newBalanceResult = $newBalanceQuery->get_result();
 
+    $temp = $connection->prepare("SELECT * FROM Account WHERE AccountID = ?");
+    $temp->bind_param("i", $id);
+    $temp->execute();
+    $tempResult = $temp->get_result()->fetch_assoc();
+
     if ($row = $newBalanceResult->fetch_assoc()) {
         $_SESSION['balance'] = $row['Balance'];
     }
@@ -34,7 +40,12 @@ try {
     $statement->close();
     $connection->close();
 
-    header("Location: user.php");
+    if($tempResult["IsAdmin"] === 0){
+        header("Location: user.php");
+    }
+    else{
+        header("Location: admin.php");
+    }
     exit();
 
 } catch (mysqli_sql_exception $e) {

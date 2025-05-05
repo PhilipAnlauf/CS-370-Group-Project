@@ -1,3 +1,19 @@
+<?php
+    session_start();
+    $adminBalance = $_SESSION["balance"];
+
+
+    $_SESSION["getID"] = "";
+    $firstName = $_SESSION["firstName"];
+    $lastName = $_SESSION["lastName"];
+    $password = $_SESSION["password"];
+    $isAdmin = $_SESSION["isAdmin"];
+    $ssn = $_SESSION["ssn"];
+    $balance = $_SESSION["balance"];
+    $id = $_SESSION["AccountID"];
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -82,97 +98,91 @@
   <div class="section">
     <h3>Admin Account Overview</h3>
     <p><strong>Name:</strong> Admin User</p>
-    <p><strong>Account Balance:</strong> $0.00</p>
+    <p><strong>Account Balance:</strong> <?Php echo "$" . $_SESSION["balance"]; ?></p>
   </div>
 
   <!-- Loan Creation -->
   <div class="section">
     <h3>Create Loan for User</h3>
+      <form action="/createLoan.php" method="POST">
+          <label>User ID</label>
+          <input type="text" placeholder="User ID" name="userID"/>
 
-    <label>User ID</label>
-    <input type="text" placeholder="User ID" />
+          <label>Loan Amount</label>
+          <input type="number" placeholder="Loan Amount" name="loanAmount"/>
 
-    <label>Loan Amount</label>
-    <input type="number" placeholder="Loan Amount" />
+          <label>Upcharge Percentage%</label>
+          <input type="number" placeholder="MPU%" name="missedPayUpch"/>
 
-    <label>Minimum Due</label>
-    <input type="number" placeholder="Minimum Amount Due" />
+          <label>Due Date:</label>
+          <input type="date" placeholder="NDD" name="nextDueDate" />
 
-    <label>Auto Payment Amount</label>
-    <input type="number" placeholder="Auto Payment Amount" />
-
-    <label>Auto Payment Status (on/off)</label>
-    <input type="text" placeholder="Auto Payment Status" />
-
-    <label>MPU%</label>
-    <input type="number" placeholder="MPU%" />
-
-    <label>NDD</label>
-    <input type="date" placeholder="NDD" />
-
-    <button type="button">Create Loan</button>
+          <button type="submit">Create Loan</button>
+      </form>
   </div>
 
   <!-- Money Transfer -->
-  <div class="section">
-    <h3>Send Money</h3>
-    <label>Recipient ID</label>
-    <input type="text" placeholder="Recipient ID" />
+    <div class="section">
+        <h3>Send Money</h3>
+        <form action="/transferFunds.php" method="POST">
+            <label for="transfer-id">Recipient ID</label>
+            <input type="text" id="transfer-id" placeholder="Recipient ID" name="transfer-id" />
 
-    <label>Amount</label>
-    <input type="number" placeholder="Amount to send" />
+            <label for="transfer-amount">Amount</label>
+            <input type="number" id="transfer-amount" placeholder="Amount to send" name="transfer-amount" />
 
-    <button type="button">Send Money</button>
-  </div>
+            <button type="submit">Send Money</button>
+        </form>
+    </div>
 
   <!-- Admin Panel -->
   <div class="section">
-    <h3>Admin User Management Panel</h3>
+    <form action="/adminGetUser.php" method="POST">
+        <h3>Admin User Management Panel</h3>
 
-    <!-- User Lookup -->
-    <div class="sub-heading">Find Specific User</div>
+        <!-- User Lookup -->
+        <div class="sub-heading">Find Specific User</div>
 
-    <label>User ID</label>
-    <input type="text" placeholder="Enter User ID" />
+        <label>User ID</label>
+        <input type="text" placeholder="Enter User ID" name="userID" />
 
-    <label>User Name</label>
-    <input type="text" placeholder="Enter User Name" />
+        <label>(Account Details) <?php echo $_SESSION["AccountDetails"] ?></label>
 
-    <button type="button">Lookup User</button>
+        <button type="submit">Lookup User</button>
+    </form>
 
     <!-- Deletion Form -->
-    <div class="sub-heading">Delete a User Account</div>
+      <div class="sub-heading">Delete a User Account</div>
+      <form action="/adminDeleteUser.php" method="POST">
+          <label>User ID</label>
+          <input type="text" placeholder="Enter user ID to delete" name="delete-id"/>
 
-    <label>User ID</label>
-    <input type="text" placeholder="Enter user ID to delete" />
-
-    <label>Admin Password</label>
-    <input type="password" placeholder="Re-enter your password to confirm" />
-
-    <button type="button">Confirm Deletion</button>
-
+          <input type="hidden" name="delete-password" value="adminOverride"/>
+          <button type="submit">Confirm Deletion</button>
+      </form>
     <!-- Modify User Form -->
     <div class="sub-heading">Change User Details</div>
+      <form action="/accountModification.php" method="POST">
+            <label>Account ID (Target User)</label>
+            <input type="text" placeholder="User Account ID to Modify" name="id" />
 
-    <label>Account ID (Target User)</label>
-    <input type="text" placeholder="User Account ID to Modify" />
+            <label>First Name</label>
+            <input type="text" placeholder="First Name" name="firstName"/>
 
-    <label>First Name</label>
-    <input type="text" placeholder="First Name" />
+            <label>Last Name</label>
+            <input type="text" placeholder="Last Name" name="lastName"/>
 
-    <label>Last Name</label>
-    <input type="text" placeholder="Last Name" />
+            <label>Birthday</label>
+            <input type="date" placeholder="Birthday" name="birthday"/>
 
-    <label>Birthday</label>
-    <input type="date" placeholder="Birthday" />
+            <label>SSN</label>
+            <input type="text" placeholder="SSN" name="ssn" />
 
-    <label>SSN</label>
-    <input type="text" placeholder="SSN" />
+            <label>Password</label>
+            <input type="password" placeholder="Set/Update Password" name="password"/>
 
-    <label>Password</label>
-    <input type="password" placeholder="Set/Update Password" />
-
-    <button type="button">Update User</button>
+            <button type="submit">Update User</button>
+      </form>
   </div>
 
 </div>

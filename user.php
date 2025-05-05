@@ -106,6 +106,42 @@
 </head>
 <body>
 
+<?Php
+$servername = "localhost";
+$serverUsername = "api_write";
+$serverPassword = "apikey";
+$databaseName = "bank_database";
+$connection = mysqli_connect($servername, $serverUsername, $serverPassword, $databaseName);
+$balanceStmt = $connection->prepare("SELECT Balance FROM Account WHERE AccountID = ?");
+$balanceStmt->bind_param("i", $id);
+$balanceStmt->execute();
+$balanceResult = $balanceStmt->get_result();
+
+if ($balanceRow = $balanceResult->fetch_assoc()) {
+    $_SESSION["balance"] = $balanceRow["Balance"];
+}
+
+$balanceStmt->close();
+
+$temp = $connection->prepare("SELECT * FROM Loan WHERE AccountID = ?");
+$temp->bind_param("i", $id);
+$temp->execute();
+$tempResult = $temp->get_result()->fetch_assoc();
+
+if ($tempResult["NextDueDate"] < date("Y-m-d")) {
+    $tempResult["LoanAmount"] += $tempResult["LoanAmount"]*($tempResult["MissedPaymentUpcharge"]/100);
+    $tempResult["NextDueDate"] = date("Y-m-d", strtotime("+30 days"));
+
+    $updateLoanStmt = $connection->prepare("UPDATE Loan SET LoanAmount = ?, NextDueDate = ? WHERE AccountID = ?");
+    $updateLoanStmt->bind_param("dsi", $tempResult["LoanAmount"], $tempResult["NextDueDate"], $id);
+    $updateLoanStmt->execute();
+    $updateLoanStmt->close();
+}
+
+$connection->close();
+
+?>
+
 <div class="container">
 
   <h2>User Dashboard</h2>
@@ -114,7 +150,7 @@
   <div class="section">
       <h3>Account Overview</h3>
       <p><strong>Name: <?php echo $firstName . " " . $lastName?></strong> </p>
-      <p><strong>Account Balance: <?php echo "$" . $balance?></strong> </p>
+      <p><strong>Account Balance: <?php echo "$" . $_SESSION["balance"]?></strong> </p>
       <p><strong>User ID: <?php echo $id?></strong> </p>
   </div>
 
@@ -133,23 +169,44 @@
   </div>
 
   <!-- Loan section -->
+    <?Php
+        $servername = "localhost";
+        $serverUsername = "api_write";
+        $serverPassword = "apikey";
+        $databaseName = "bank_database";
+
+        $connection = mysqli_connect($servername, $serverUsername, $serverPassword, $databaseName);
+
+        $stmt = $connection->prepare("SELECT * FROM Loan WHERE AccountID = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+
+        if($row = $stmt->get_result()->fetch_assoc())
+        {
+            $loanAmount = $row["LoanAmount"];
+            $missedPayUpch = $row["MissedPaymentUpcharge"];
+            $dueDate = $row["NextDueDate"];
+        }
+    ?>
+
+
+
   <div class="section">
     <h3>Loan Management</h3>
 
     <!-- Example of dynamic loan entry -->
-    <div class="loan-item">
-      <div class="sub-label"><strong>Loan Amount:</strong> </div>
-      <div class="sub-label"><strong>Minimum Due:</strong> </div>
-      <div class="sub-label"><strong>Auto Payment:</strong> </div>
-      <div class="sub-label"><strong>Auto Payment On:</strong> </div>
-      <div class="sub-label"><strong>MPU%:</strong> </div>
-      <div class="sub-label"><strong>NDD:</strong> 2025-06-15</div>
+    <class="loan-item">
+      <div class="sub-label"><strong>Loan Amount:</strong><?Php echo $loanAmount?></div>
+      <div class="sub-label"><strong>Upcharge Percentage:</strong><?Php echo ' %' . $missedPayUpch?></div>
+      <div class="sub-label"><strong>Due Date:</strong><?Php echo $dueDate?></div>
 
       <label for="custom-payment">Make a Custom Payment</label>
-      <div class="flex-row">
-        <input type="number" placeholder="Enter amount" />
-        <button type="button">Submit Payment</button>
-      </div>
+      <form action="/payLoan.php" method="POST">
+          <div class="flex-row">
+              <input type="number" placeholder="Enter amount" name = "paymentAmount"/>
+              <button type="submit">Submit Payment</button>
+          </div>
+      </form>
     </div>
 
     <!-- You can duplicate the .loan-item div above for multiple loans -->

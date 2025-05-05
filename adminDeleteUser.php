@@ -30,13 +30,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $data = $results->fetch_assoc();
 
         // Allow if password is valid OR if admin is logged in
-        if (password_verify($password, $data['Password']) || $isAdmin === true) {
-
             // Delete transactions
             $deleteTransactions = $connection->prepare("DELETE FROM Transaction WHERE SenderID = ? OR ReceiverID = ?");
             $deleteTransactions->bind_param("ii", $id, $id);
             $deleteTransactions->execute();
             $deleteTransactions->close();
+
+            $deleteAccount = $connection->prepare("DELETE FROM Loan WHERE AccountID = ?");
+            $deleteAccount->bind_param("i", $id);
+            $deleteAccount->execute();
+            $deleteAccount->close();
 
             // Delete account
             $deleteAccount = $connection->prepare("DELETE FROM Account WHERE AccountID = ?");
@@ -47,21 +50,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $statement->close();
             $connection->close();
 
-            header("Location: /landing.html");
+            if($isAdmin === true)
+            {
+                header("Location: /admin.php");
+            }
+            else{
+                header("Location: /admin.php");
+            }
             exit();
-
-        }
-        else
-        {
-            $statement->close();
-            $connection->close();
-            header("Location: user.php");
-            exit();
-        }
     }
 
     $statement->close();
     $connection->close();
-
+    header("Location: /admin.php");
 }
 ?>
