@@ -23,7 +23,23 @@ if (mysqli_connect_errno()) {
     if($row = $stmt->get_result()->fetch_assoc())
     {
         $_SESSION["AccountDetails"] = "ID: " . $row["AccountID"] . ", First name: " . $row["FirstName"] .
-            ", Last name: " . $row["LastName"] . ", Birthday: " . $row["Birthday"] . ", SSN: " . $row["SSN"] . ".";
+            ", Last name: " . $row["LastName"] . ", Birthday: " . $row["Birthday"] . ", SSN: " . $row["SSN"] . ".\n";
+
+        $transStmt = $connection->prepare("SELECT * FROM UserTransactionHistory WHERE SenderID = ? OR ReceiverID = ?");
+        $transStmt->bind_param("ii", $id, $id);
+        $transStmt->execute();
+        $result = $transStmt->get_result();
+
+        if(mysqli_num_rows($result) > 0)
+        {
+            while($anotherTempVarYay = mysqli_fetch_assoc($result))
+            {
+                $_SESSION["AccountDetails"] .= "Transaction ID: " . $anotherTempVarYay["TransactionID"] . ", SenderID: " . $anotherTempVarYay["SenderID"] .
+                    ", ReceiverID: " . $anotherTempVarYay["ReceiverID"] . ", Amount: " . $anotherTempVarYay["Amount"] .
+                    ", Date: " . $anotherTempVarYay["Date"] . ".\n";
+            }
+        }
+
         header("Location: /admin.php");
     }
 

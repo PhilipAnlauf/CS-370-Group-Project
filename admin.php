@@ -2,7 +2,6 @@
     session_start();
     $adminBalance = $_SESSION["balance"];
 
-
     $_SESSION["getID"] = "";
     $firstName = $_SESSION["firstName"];
     $lastName = $_SESSION["lastName"];
@@ -146,7 +145,7 @@
         <label>User ID</label>
         <input type="text" placeholder="Enter User ID" name="userID" />
 
-        <label>(Account Details) <?php echo $_SESSION["AccountDetails"] ?></label>
+        <label>(Account Details) <?php echo $_SESSION["AccountDetails"]?></label>
 
         <button type="submit">Lookup User</button>
     </form>
@@ -188,4 +187,7 @@
 </div>
 
 </body>
+<?php
+$_SESSION["AccountDetails"] = "";
+?>
 </html>
