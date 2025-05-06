@@ -31,7 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Allow if password is valid OR if admin is logged in
         if (password_verify($password, $data['Password']) || $isAdmin === true) {
-
             // Delete transactions
             $deleteTransactions = $connection->prepare("DELETE FROM Transaction WHERE SenderID = ? OR ReceiverID = ?");
             $deleteTransactions->bind_param("ii", $id, $id);

@@ -4,6 +4,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $firstName = $_SESSION["firstName"];
     $isAdmin = isset($_SESSION["isAdmin"]) ? $_SESSION["isAdmin"] : false;
+    $adminID = isset($_SESSION["AccountID"]) ? $_SESSION["AccountID"] : null;
 
     // Server connection info
     $servername = "localhost";
@@ -29,6 +30,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($results && $results->num_rows > 0) {
         $data = $results->fetch_assoc();
 
+            $yetAnotherHoldVariable = $id;
+            $connection->query("SET FOREIGN_KEY_CHECKS = 0");
+            $stmt = $connection->prepare("DELETE FROM CustomerService WHERE EmployeeID = ?");
+            $stmt->bind_param("i", $yetAnotherHoldVariable);
+            $stmt->execute();
+            $stmt->close();
+
         // Allow if password is valid OR if admin is logged in
             // Delete transactions
             $deleteTransactions = $connection->prepare("DELETE FROM Transaction WHERE SenderID = ? OR ReceiverID = ?");
@@ -50,11 +58,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $statement->close();
             $connection->close();
 
-            if($isAdmin === true)
-            {
-                header("Location: /admin.php");
-            }
-            else{
+            if ($isAdmin && $adminID == $id) {
+                header("Location: /landing.html");
+            } else {
                 header("Location: /admin.php");
             }
             exit();

@@ -2,55 +2,47 @@
     session_start();
 
     $id = $_SESSION["AccountID"];
+    $loanID = $_POST["loanId"];
+    $paymentAmount = $_POST["paymentAmount"];
 
     $servername = "localhost";
     $serverUsername = "api_write";
     $serverPassword = "apikey";
     $databaseName = "bank_database";
 
-    $paymentAmount = $_POST["paymentAmount"];
-
     $connection = mysqli_connect($servername, $serverUsername, $serverPassword, $databaseName);
 
-    $stmt = $connection->prepare("SELECT * FROM Loan WHERE AccountID = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
+    $stmt = $connection->prepare("CALL PayLoan(?,?,?)");
+    $stmt->bind_param("iid", $loanID, $id, $paymentAmount);
 
-    if($row = $stmt->get_result()->fetch_assoc())
+    try
     {
-        $loanID = $row["LoanID"];
+        $stmt->execute();
+    }
+    catch(Exception $e)
+    {
+        $connection->close();
+        header("Location: /user.php");
+        exit();
+    }
 
-        $stmt = $connection->prepare("CALL PayLoan(?,?,?)");
-        $stmt->bind_param("iid", $loanID, $id, $paymentAmount);
+    $deleteLoan = $connection->prepare("SELECT LoanAmount FROM Loan WHERE LoanID = ?");
+    $deleteLoan->bind_param("i", $loanID);
+    $deleteLoan->execute();
+    $result = $deleteLoan->get_result();
 
-        try {
-            $stmt->execute();
-        }
-        catch(Exception $e) {
-            $connection->close();
-            header("Location: user.php");
-        }
-
-        $deleteLoan = $connection->prepare("SELECT LoanAmount FROM Loan WHERE AccountID = ?");
-        $deleteLoan->bind_param("i", $id);
-        $deleteLoan->execute();
-        $result = $deleteLoan->get_result();
-
-        if ($loanRow = $result->fetch_assoc()) {
-            if ($loanRow["LoanAmount"] <= 0) {
-                $deleteLoan->close();
-
-                $deleteStmt = $connection->prepare("DELETE FROM Loan WHERE AccountID = ?");
-                $deleteStmt->bind_param("i", $id);
-                $deleteStmt->execute();
-                $deleteStmt->close();
-            } else {
-                $deleteLoan->close();
-            }
+    if ($loanRow = $result->fetch_assoc()) {
+        if ($loanRow["LoanAmount"] <= 0) {
+            $deleteLoan->close();
+            $deleteStmt = $connection->prepare("DELETE FROM Loan WHERE LoanID = ?");
+            $deleteStmt->bind_param("i", $loanID);
+            $deleteStmt->execute();
+            $deleteStmt->close();
         } else {
             $deleteLoan->close();
         }
-
+    } else {
+        $deleteLoan->close();
     }
 
     $stmt->close();

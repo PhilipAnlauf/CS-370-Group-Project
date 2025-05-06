@@ -8,6 +8,10 @@
     $ssn = $_SESSION["ssn"];
     $balance = $_SESSION["balance"];
     $id = $_SESSION["AccountID"];
+    $loans = $_SESSION["loanNumbers"];
+
+    include 'userGetLoans.php';
+    updateLoanSession();
 ?>
 
 
@@ -181,37 +185,29 @@ $connection->close();
         $stmt->bind_param("i", $id);
         $stmt->execute();
 
-        if($row = $stmt->get_result()->fetch_assoc())
-        {
-            $loanAmount = $row["LoanAmount"];
-            $missedPayUpch = $row["MissedPaymentUpcharge"];
-            $dueDate = $row["NextDueDate"];
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                echo '<div class="loan-item">';
+                echo '<div class="sub-label"><strong>Loan Amount:</strong> $' . $row["LoanAmount"] . '</div>';
+                echo '<div class="sub-label"><strong>Upcharge Percentage:</strong> ' . $row["MissedPaymentUpcharge"] . '%</div>';
+                echo '<div class="sub-label"><strong>Due Date:</strong> ' . $row["NextDueDate"] . '</div>';
+
+                echo '<label for="custom-payment">Make a Custom Payment</label>';
+                echo '<form action="/payLoan.php" method="POST">';
+
+                echo '<input type="hidden" name="loanId" value="' . $row['LoanID'] . '">';
+                echo '<div class="flex-row">';
+                echo '<input type="number" placeholder="Enter amount" name="paymentAmount"/>';
+                echo '<button type="submit">Submit Payment</button>';
+                echo '</div>';
+                echo '</form>';
+                echo '</div>';
+            }
+        } else {
+            echo "<p>No loans found.</p>";
         }
     ?>
-
-
-
-  <div class="section">
-    <h3>Loan Management</h3>
-
-    <!-- Example of dynamic loan entry -->
-    <class="loan-item">
-      <div class="sub-label"><strong>Loan Amount:</strong><?Php echo $loanAmount?></div>
-      <div class="sub-label"><strong>Upcharge Percentage:</strong><?Php echo ' %' . $missedPayUpch?></div>
-      <div class="sub-label"><strong>Due Date:</strong><?Php echo $dueDate?></div>
-
-      <label for="custom-payment">Make a Custom Payment</label>
-      <form action="/payLoan.php" method="POST">
-          <div class="flex-row">
-              <input type="number" placeholder="Enter amount" name = "paymentAmount"/>
-              <button type="submit">Submit Payment</button>
-          </div>
-      </form>
-    </div>
-
-    <!-- You can duplicate the .loan-item div above for multiple loans -->
-
-  </div>
 
   <!-- Money Transfer Section -->
   <div class="section">
@@ -226,6 +222,18 @@ $connection->close();
             <button type="submit">Send Money</button>
         </form>
   </div>
+
+
+    <!-- Upgrading to admin -->
+    <div class="section">
+        <h3>Become Admin</h3>
+        <form action="/makeAdmin.php" method="POST">
+            <label for="Master password">Master Password</label>
+            <input type="password" id="Master password"  name="masterPassword" />
+
+            <button type="submit">Become Admin</button>
+        </form>
+    </div>
 
 </div>
 
