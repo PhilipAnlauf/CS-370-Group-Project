@@ -29,8 +29,7 @@
                 $stuff->execute();
                 $stuffResult = $stuff->get_result();
 
-                if(mysqli_num_rows($stuffResult) <= 0)
-                {
+                if (mysqli_num_rows($stuffResult) <= 0) {
                     $stmt = $connection->prepare("INSERT INTO CustomerService (EmployeeID, EmployeeTitle) VALUES (?, ?)");
                     $hold = "Junior Teller";
                     $stmt->bind_param("is", $accountID, $hold);

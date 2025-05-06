@@ -96,8 +96,9 @@
   <!-- Account Info -->
   <div class="section">
     <h3>Admin Account Overview</h3>
-    <p><strong>Name:</strong> Admin User</p>
+    <p><strong>Name:</strong> <?Php echo "" . $_SESSION["firstName"] . " " . $_SESSION["lastName"]; ?> </p>
     <p><strong>Account Balance:</strong> <?Php echo "$" . $_SESSION["balance"]; ?></p>
+      <p><strong>User ID: <?php echo $id?></strong> </p>
   </div>
 
   <!-- Loan Creation -->

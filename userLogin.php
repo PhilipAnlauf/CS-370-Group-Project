@@ -21,32 +21,33 @@
 
             if (mysqli_num_rows($results) > 0)
             {
-                $data = $results->fetch_assoc();
-
-                //Password verification
-                if (password_verify($password, $data['Password']) && $firstName == $data['FirstName']) {
-                    //Declaration of session variables if password correct
-                    session_start();
-
-                    echo "Login Successful!";
-
-                    $_SESSION["firstName"] = $firstName;
-                    $_SESSION["lastName"] = $data["LastName"];
-                    $_SESSION["password"] = $password;
-                    $_SESSION["isAdmin"] = $data["IsAdmin"];
-                    $_SESSION["ssn"] = $data["SSN"];
-                    $_SESSION["balance"] = $data["Balance"];
-                    $_SESSION["AccountID"] = $data["AccountID"];
-
-                    if ($_SESSION["isAdmin"] == 0) {
-                        header("location: user.php");
-                    } else {
-                        header("location: admin.php");
-                    }
-                }
-                else
+                while($row = $results->fetch_assoc())
                 {
-                    header("Location: landing.html");
+                    //Password verification
+                    if (password_verify($password, $row['Password']) && $firstName == $row['FirstName']) {
+                        //Declaration of session variables if password correct
+                        session_start();
+
+                        echo "Login Successful!";
+
+                        $_SESSION["firstName"] = $firstName;
+                        $_SESSION["lastName"] = $row["LastName"];
+                        $_SESSION["password"] = $password;
+                        $_SESSION["isAdmin"] = $row["IsAdmin"];
+                        $_SESSION["ssn"] = $row["SSN"];
+                        $_SESSION["balance"] = $row["Balance"];
+                        $_SESSION["AccountID"] = $row["AccountID"];
+
+                        if ($_SESSION["isAdmin"] == 0) {
+                            header("location: user.php");
+                        } else {
+                            header("location: admin.php");
+                        }
+                    }
+                    else
+                    {
+                        header("Location: landing.html");
+                    }
                 }
             }
             else
